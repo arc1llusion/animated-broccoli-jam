@@ -179,6 +179,17 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""c14f2809-9c31-4c7f-b072-62d3511ead36"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""79e62b90-03f2-4baa-9fd6-7838c7727487"",
                     ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
@@ -231,6 +242,24 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""QueryUnit"",
+                    ""type"": ""Button"",
+                    ""id"": ""cd37f5be-7b3d-4138-9dd5-a7bb22d1ae75"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CursorUpdate"",
+                    ""type"": ""Value"",
+                    ""id"": ""736f0790-6bf7-474d-828c-19fdd9dd8f07"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -269,7 +298,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Up"",
-                    ""id"": ""fc569b1a-673c-4c6b-815a-cc0a4b97d603"",
+                    ""id"": ""b32ae79f-1ae3-4a96-a17e-b22bf0435c22"",
                     ""path"": ""<Keyboard>/upArrow"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -291,7 +320,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Down"",
-                    ""id"": ""d16fd5a1-3c98-486f-9fbd-9954285449c2"",
+                    ""id"": ""c9e686b7-24f5-4b39-9fe0-aaddd82d8151"",
                     ""path"": ""<Keyboard>/downArrow"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -313,7 +342,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Left"",
-                    ""id"": ""e5b25c4f-0100-48d9-9120-6828c7e6ad46"",
+                    ""id"": ""6e659f27-43c7-435d-b957-2bc91fce615b"",
                     ""path"": ""<Keyboard>/leftArrow"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -335,56 +364,12 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Right"",
-                    ""id"": ""b45c1c30-722b-455a-b48b-6034a0732a67"",
+                    ""id"": ""0b2bb3a4-d5fc-4dc9-ad36-20516466d63d"",
                     ""path"": ""<Keyboard>/rightArrow"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""MoveCamera"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""73f92d4c-8262-43ba-a194-76bb0126dd25"",
-                    ""path"": ""<Gamepad>/leftStick/x"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""QuickSelect"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""AD"",
-                    ""id"": ""843aca4b-36f9-4f81-a497-3edcdb4a16e8"",
-                    ""path"": ""1DAxis"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""QuickSelect"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""negative"",
-                    ""id"": ""fbea34ff-f130-484d-bf2c-08d677c7d6e7"",
-                    ""path"": ""<Keyboard>/a"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""QuickSelect"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""positive"",
-                    ""id"": ""f35f6243-eae4-40a7-a05f-860ac8880b89"",
-                    ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""QuickSelect"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -402,7 +387,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""negative"",
                     ""id"": ""85303b50-27a6-4f91-8218-c0addcf8eb24"",
-                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -413,7 +398,40 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""positive"",
                     ""id"": ""6ced58c4-a170-4da4-a98b-e686f39544d2"",
-                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""DPad"",
+                    ""id"": ""6f81f36e-4fdb-4da9-b9d5-4cc05b37d927"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickSelect"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""a8b281aa-fd53-4cdf-8682-ccabe76db7bd"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""dac41c33-421f-4033-9340-f31741c52aed"",
+                    ""path"": ""<Gamepad>/dpad/right"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -442,6 +460,28 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""action"": ""SelectUnit"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6c6b25c0-571b-4242-a7eb-407bda6adc34"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QueryUnit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1fdb5071-251b-4efa-ab56-fcbae7477dc7"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CursorUpdate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -458,6 +498,8 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_Selection_MoveCamera = m_Selection.FindAction("MoveCamera", throwIfNotFound: true);
         m_Selection_QuickSelect = m_Selection.FindAction("QuickSelect", throwIfNotFound: true);
         m_Selection_SelectUnit = m_Selection.FindAction("SelectUnit", throwIfNotFound: true);
+        m_Selection_QueryUnit = m_Selection.FindAction("QueryUnit", throwIfNotFound: true);
+        m_Selection_CursorUpdate = m_Selection.FindAction("CursorUpdate", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -584,6 +626,8 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Selection_MoveCamera;
     private readonly InputAction m_Selection_QuickSelect;
     private readonly InputAction m_Selection_SelectUnit;
+    private readonly InputAction m_Selection_QueryUnit;
+    private readonly InputAction m_Selection_CursorUpdate;
     public struct SelectionActions
     {
         private @PlayerActions m_Wrapper;
@@ -591,6 +635,8 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         public InputAction @MoveCamera => m_Wrapper.m_Selection_MoveCamera;
         public InputAction @QuickSelect => m_Wrapper.m_Selection_QuickSelect;
         public InputAction @SelectUnit => m_Wrapper.m_Selection_SelectUnit;
+        public InputAction @QueryUnit => m_Wrapper.m_Selection_QueryUnit;
+        public InputAction @CursorUpdate => m_Wrapper.m_Selection_CursorUpdate;
         public InputActionMap Get() { return m_Wrapper.m_Selection; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -609,6 +655,12 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @SelectUnit.started += instance.OnSelectUnit;
             @SelectUnit.performed += instance.OnSelectUnit;
             @SelectUnit.canceled += instance.OnSelectUnit;
+            @QueryUnit.started += instance.OnQueryUnit;
+            @QueryUnit.performed += instance.OnQueryUnit;
+            @QueryUnit.canceled += instance.OnQueryUnit;
+            @CursorUpdate.started += instance.OnCursorUpdate;
+            @CursorUpdate.performed += instance.OnCursorUpdate;
+            @CursorUpdate.canceled += instance.OnCursorUpdate;
         }
 
         private void UnregisterCallbacks(ISelectionActions instance)
@@ -622,6 +674,12 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @SelectUnit.started -= instance.OnSelectUnit;
             @SelectUnit.performed -= instance.OnSelectUnit;
             @SelectUnit.canceled -= instance.OnSelectUnit;
+            @QueryUnit.started -= instance.OnQueryUnit;
+            @QueryUnit.performed -= instance.OnQueryUnit;
+            @QueryUnit.canceled -= instance.OnQueryUnit;
+            @CursorUpdate.started -= instance.OnCursorUpdate;
+            @CursorUpdate.performed -= instance.OnCursorUpdate;
+            @CursorUpdate.canceled -= instance.OnCursorUpdate;
         }
 
         public void RemoveCallbacks(ISelectionActions instance)
@@ -650,5 +708,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         void OnMoveCamera(InputAction.CallbackContext context);
         void OnQuickSelect(InputAction.CallbackContext context);
         void OnSelectUnit(InputAction.CallbackContext context);
+        void OnQueryUnit(InputAction.CallbackContext context);
+        void OnCursorUpdate(InputAction.CallbackContext context);
     }
 }
