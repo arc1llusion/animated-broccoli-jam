@@ -1,10 +1,11 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
 
-public class PlayerController : MonoBehaviour, PlayerActions.ITestingActions
+public class PlayerController : MonoBehaviour, PlayerActions.IUnitActions
 {
     PlayerActions controls;
 
@@ -17,29 +18,63 @@ public class PlayerController : MonoBehaviour, PlayerActions.ITestingActions
     [SerializeField]
     private bool DoTraditionalMovement = true;
 
+    [SerializeField]
+    private GameObject SelectedIndicator = null;
+
     private bool IsSprinting = false;
 
     private Vector2 movementVector = Vector2.zero;
 
     private Rigidbody2D rigid;
 
+    private CinemachineVirtualCamera vc;
+
+    private GameManager gameManager;
+
     private void Start()
     {
         rigid = GetComponent<Rigidbody2D>();
+        vc = GetComponentInChildren<CinemachineVirtualCamera>(true);
+        gameManager = FindFirstObjectByType<GameManager>();
     }
 
     private void OnEnable()
     {
-        controls = new PlayerActions();
-        controls.Testing.AddCallbacks(this);
-        controls.Enable();
+        
+    }
+
+    public void SetUnitMovementEnabled(bool Enable)
+    {
+        if(Enable)
+        {
+            controls = new PlayerActions();
+            controls.Unit.AddCallbacks(this);
+            controls.Enable();
+
+            if(SelectedIndicator)
+            {
+                SelectedIndicator.SetActive(true);
+            }
+        }
+        else
+        {
+            if (controls != null)
+            {
+                controls.Disable();
+                controls.Unit.RemoveCallbacks(this);
+                controls = null;
+            }
+
+            if (SelectedIndicator)
+            {
+                SelectedIndicator.SetActive(false);
+            }
+        }
     }
 
     private void OnDisable()
     {
-        controls.Disable();
-        controls.Testing.RemoveCallbacks(this);
-        controls = null;
+        SetUnitMovementEnabled(false);
     }
 
     private void FixedUpdate()
@@ -79,8 +114,24 @@ public class PlayerController : MonoBehaviour, PlayerActions.ITestingActions
         }
     }
 
+    public void OnGoBack(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            if (gameManager)
+            {
+                gameManager.ReturnUnit(this);
+            }
+        }
+    }
+
     private void OnDrawGizmos()
     {
         Gizmos.DrawLine(transform.position, transform.position + new Vector3(movementVector.x, movementVector.y, 0.0f) * 10);
+    }
+
+    public CinemachineVirtualCamera GetVirtualCamera()
+    {
+        return vc;
     }
 }
