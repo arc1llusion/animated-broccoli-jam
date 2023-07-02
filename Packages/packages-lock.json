@@ -1,5 +1,54 @@
 {
   "dependencies": {
+    "com.snowdrama.core": {
+      "version": "https://github.com/Snowdrama/SnowdramaUnityCore.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "edcc4dbb58af08fccef4ee983bbf17223ade41c6"
+    },
+    "com.snowdrama.options": {
+      "version": "https://github.com/Snowdrama/SnowdramaUnityOptionTools.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "53dad907e6864ea6f562aeb696a96625914077a9"
+    },
+    "com.snowdrama.springs": {
+      "version": "https://github.com/Snowdrama/SnowdramaUnitySpringTools.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "a913ef1c5440f5920d676399823b297c00a3af50"
+    },
+    "com.snowdrama.timers": {
+      "version": "https://github.com/Snowdrama/SnowdramaUnityTimerTools.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "2f0665b4e27b9edd84089610e74d8f339953cdbe"
+    },
+    "com.snowdrama.transitions": {
+      "version": "https://github.com/Snowdrama/SnowdramaUnityTransitionTools.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "eb567061e151d9840d69f890d43a095790fe59b6"
+    },
+    "com.snowdrama.ui": {
+      "version": "https://github.com/Snowdrama/SnowdramaUnityUITools.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "857956ec518c55c6147bfb555c4bf0f15cb73e4f"
+    },
+    "com.snowdrama.ui_router": {
+      "version": "https://github.com/Snowdrama/SnowdramaUnityUIRouterTools.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "2457aa9ea488a74e8729e9e8aee49c509a3dc598"
+    },
     "com.unity.2d.animation": {
       "version": "10.0.2",
       "depth": 1,
@@ -102,6 +151,15 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unity.cinemachine": {
+      "version": "2.9.7",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.test-framework": "1.1.31"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.collab-proxy": {
       "version": "2.0.5",
       "depth": 0,
@@ -156,6 +214,15 @@
       "source": "registry",
       "dependencies": {
         "com.unity.test-framework": "1.1.9"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.inputsystem": {
+      "version": "1.6.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.modules.uielements": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
