@@ -21,6 +21,13 @@ public class PlayerController : MonoBehaviour, PlayerActions.ITestingActions
 
     private Vector2 movementVector = Vector2.zero;
 
+    private Rigidbody2D rigid;
+
+    private void Start()
+    {
+        rigid = GetComponent<Rigidbody2D>();
+    }
+
     private void OnEnable()
     {
         controls = new PlayerActions();
@@ -35,9 +42,10 @@ public class PlayerController : MonoBehaviour, PlayerActions.ITestingActions
         controls = null;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        transform.Translate(movementVector * (IsSprinting ? SprintSpeed : Speed) * Time.deltaTime);
+        var moveThisTick = movementVector * (IsSprinting ? SprintSpeed : Speed) * Time.fixedDeltaTime;
+        rigid.MovePosition(rigid.position + moveThisTick);
     }
 
     public void OnMove(InputAction.CallbackContext context)
