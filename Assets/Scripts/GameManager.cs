@@ -89,7 +89,6 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
             var vc = GetSelectedUnitVirtualCamera();
             if(vc)
             {
-                Debug.Log("Force position");
                 PanningCamera.ForceCameraPosition(vc.transform.position, vc.transform.rotation);
             }     
         }
@@ -179,6 +178,7 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
                 {
                     vc.Priority = VirtualCameraActivePriority; 
                     unit.SetUnitMovementEnabled(true);
+                    unit.StartMove();
 
                     if (PanningCamera)
                     {
@@ -201,6 +201,8 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
         if (player)
         {
             player.SetUnitMovementEnabled(false);
+            player.ResetMove();
+
             var vc = player.GetVirtualCamera();
             if(vc)
             {
@@ -220,9 +222,10 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
         if(context.performed)
         {
             var hit = Physics2D.OverlapPoint(Camera.main.ScreenToWorldPoint(MousePosition), PlayerLayer);
-            if(hit)
+
+            if (hit)
             {
-                var unit = hit.gameObject.GetComponent<PlayerController>();
+                var unit = hit.gameObject.GetComponentInParent<PlayerController>();
                 if (unit)
                 {
                     SelectedUnit = units.IndexOf(unit);

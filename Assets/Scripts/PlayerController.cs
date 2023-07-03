@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
 
+
+[RequireComponent(typeof(Movement))]
 public class PlayerController : MonoBehaviour, PlayerActions.IUnitActions
 {
     PlayerActions controls;
@@ -31,11 +33,14 @@ public class PlayerController : MonoBehaviour, PlayerActions.IUnitActions
 
     private GameManager gameManager;
 
+    private Movement movement;
+
     private void Start()
     {
         rigid = GetComponent<Rigidbody2D>();
         vc = GetComponentInChildren<CinemachineVirtualCamera>(true);
         gameManager = FindFirstObjectByType<GameManager>();
+        movement = GetComponent<Movement>();
     }
 
     private void OnEnable()
@@ -79,14 +84,17 @@ public class PlayerController : MonoBehaviour, PlayerActions.IUnitActions
 
     private void FixedUpdate()
     {
-        var moveThisTick = movementVector * (IsSprinting ? SprintSpeed : Speed) * Time.fixedDeltaTime;
+        movement.AddMovementVector(movementVector);
+
+        var moveThisTick = movement.ConsumeInputVector(Time.fixedDeltaTime, IsSprinting ? SprintSpeed : Speed);
         rigid.MovePosition(rigid.position + moveThisTick);
+
+        movement.SetLastPosition(transform.position);
     }
 
     public void OnMove(InputAction.CallbackContext context)
     {
         var input = context.ReadValue<Vector2>();
-        var magnitude = input.magnitude;
 
         if (DoTraditionalMovement)
         {
@@ -133,5 +141,33 @@ public class PlayerController : MonoBehaviour, PlayerActions.IUnitActions
     public CinemachineVirtualCamera GetVirtualCamera()
     {
         return vc;
+    }
+
+    public void StartMove()
+    {
+        movement.StartMove();
+    }
+
+    public void ResetMove()
+    {
+        movement.ResetMove();
+    }
+
+    public void ConfirmMove()
+    {
+        movement.ConfirmMove();
+    }
+
+    public void OnConfirm(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            movement.ConfirmMove();
+
+            if (gameManager)
+            {
+                gameManager.ReturnUnit(this);
+            }
+        }
     }
 }
