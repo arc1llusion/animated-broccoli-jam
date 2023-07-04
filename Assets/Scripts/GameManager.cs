@@ -6,12 +6,20 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
 
+
+public enum BattleTeamTurn
+{
+    Player = 0,
+    Enemy = 1
+}
+
 public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
 {
-    PlayerActions controls;
-
-    List<PlayerController> units;
+    List<BaseUnit> playerUnits;
     private int SelectedUnit = 0;
+
+    List<BaseUnit> enemyUnits;
+    private int SelectedEnemyUnit = 0;
 
     private int VirtualCameraInactivePriority = 0;
     private int VirtualCameraActivePriority = 10;
@@ -30,11 +38,15 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
 
     private float CameraPanSpeed = 4.0f;
 
+    private BattleTeamTurn BattleTeamTurn = BattleTeamTurn.Player;
+    private List<BaseUnit> UnitTurnTaken = new List<BaseUnit>();
+
     private void Start()
     {
-        units = FindObjectsByType<PlayerController>(FindObjectsInactive.Exclude, FindObjectsSortMode.None).ToList();
+        playerUnits = FindObjectsByType<PlayerController>(FindObjectsInactive.Exclude, FindObjectsSortMode.None).Select(x => (BaseUnit)x).ToList();
+        enemyUnits = FindObjectsByType<EnemyController>(FindObjectsInactive.Exclude, FindObjectsSortMode.None).Select(x => (BaseUnit)x).ToList();
 
-        if(!PanningCamera)
+        if (!PanningCamera)
         {
             Debug.LogError("No main panning camera set.");
             return;
@@ -73,30 +85,20 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
 
         if (Enable)
         {
-            //Before
-            //controls = new PlayerActions();
-            //controls.Selection.AddCallbacks(this);
-            //controls.Enable();
-
-            //After
             PlayerInputBinder.BindPlayerInputToClass(playerInput, typeof(PlayerActions), this);
             playerInput.SwitchCurrentActionMap(nameof(PlayerActions.Selection));
         }
         else
         {
-            //if (controls != null)
-            //{
-            //    controls.Disable();
-            //    controls.Selection.RemoveCallbacks(this);
-            //    controls = null;
-            //}
-
             PlayerInputBinder.UnbindPlayerInputToClass(playerInput, typeof(PlayerActions), this);
         }
     }
 
     public void OnMoveCamera(InputAction.CallbackContext context)
     {
+        if (BattleTeamTurn == BattleTeamTurn.Enemy)
+            return;
+
         var input = context.ReadValue<Vector2>();
 
         PanningCameraTranslate = input;
@@ -117,7 +119,7 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
 
     public void OnQuickSelect(InputAction.CallbackContext context)
     {
-        if (units.Count() == 0 || !context.performed)
+        if (playerUnits.Count() == 0 || !context.performed || BattleTeamTurn == BattleTeamTurn.Enemy)
         {
             return;
         }
@@ -132,23 +134,23 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
     {
         if (input > 0)
         {
-            SelectedUnit = (SelectedUnit + 1) % units.Count();
+            SelectedUnit = (SelectedUnit + 1) % playerUnits.Count();
         }
         else if (input < 0)
         {
             --SelectedUnit;
             if (SelectedUnit < 0)
             {
-                SelectedUnit = units.Count() - 1;
+                SelectedUnit = playerUnits.Count() - 1;
             }
         }
     }
 
     private void QuickSelectUnit()
     {
-        for (var i = 0; i < units.Count(); ++i)
+        for (var i = 0; i < playerUnits.Count(); ++i)
         {
-            var unit = units.ElementAt(i);
+            var unit = playerUnits.ElementAt(i);
             var vc = unit.GetVirtualCamera();
 
             if (i == SelectedUnit && vc)
@@ -168,7 +170,7 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
 
     public void OnSelectUnit(InputAction.CallbackContext context)
     {
-        if (context.performed)
+        if (BattleTeamTurn == BattleTeamTurn.Player && context.performed)
         {
             SelectUnit();
         }
@@ -176,24 +178,41 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
 
     private CinemachineVirtualCamera GetSelectedUnitVirtualCamera()
     {
-        if (SelectedUnit < 0 || SelectedUnit >= units.Count())
+        if (SelectedUnit < 0 || SelectedUnit >= playerUnits.Count())
             return null;
 
-        return units[SelectedUnit].GetVirtualCamera();
+        return playerUnits[SelectedUnit].GetVirtualCamera();
     }
 
     private void SelectUnit()
     {
-        SetOverviewControlsEnabled(false);        
-
-        for (var i = 0; i < units.Count(); ++i)
+        var selectedIdx = 0;
+        List<BaseUnit> unitsToCheck;
+        
+        if(BattleTeamTurn == BattleTeamTurn.Player)
         {
-            var unit = units.ElementAt(i);
+            selectedIdx = SelectedUnit;
+            unitsToCheck = playerUnits;
+        }
+        else
+        {
+            selectedIdx = SelectedEnemyUnit;
+            unitsToCheck = enemyUnits;
+        }
+
+        if (UnitTurnTaken.Contains(unitsToCheck.ElementAt(selectedIdx)))
+            return;
+
+        SetOverviewControlsEnabled(false);
+
+        for (var i = 0; i < unitsToCheck.Count(); ++i)
+        {
+            var unit = unitsToCheck.ElementAt(i);
             var vc = unit.GetVirtualCamera();
 
             if (vc)
             {
-                if (i == SelectedUnit)
+                if (i == selectedIdx)
                 {
                     vc.Priority = VirtualCameraActivePriority; 
                     unit.SetUnitMovementEnabled(true);
@@ -213,32 +232,54 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
         }
     }
 
-    public void ReturnUnit(PlayerController player)
+    public void ReturnUnit(BaseUnit unit, bool turnTaken)
     {
         SetOverviewControlsEnabled(true);
 
-        if (player)
+        if (unit)
         {
-            player.SetUnitMovementEnabled(false);
-            player.ResetMove();
+            unit.SetUnitMovementEnabled(false);
 
-            var vc = player.GetVirtualCamera();
-            if(vc)
+            if (!turnTaken)
             {
-                vc.Priority = VirtualCameraInactivePriority;
+                unit.ResetMove();
+            }
+            else
+            {
+                UnitTurnTaken.Add(unit);
+            }
 
-                if (PanningCamera)
+            if (BattleTeamTurn == BattleTeamTurn.Player)
+            {
+                var vc = unit.GetVirtualCamera();
+                if (vc)
                 {
-                    PanningCamera.Priority = VirtualCameraActivePriority;
-                    PanningCamera.ForceCameraPosition(vc.transform.position, vc.transform.rotation);
+                    vc.Priority = VirtualCameraInactivePriority;
+
+                    if (PanningCamera)
+                    {
+                        PanningCamera.Priority = VirtualCameraActivePriority;
+                        PanningCamera.ForceCameraPosition(vc.transform.position, vc.transform.rotation);
+                    }
+                }
+            }
+            else if(BattleTeamTurn == BattleTeamTurn.Enemy)
+            {
+                ++SelectedEnemyUnit;
+                if (SelectedEnemyUnit < enemyUnits.Count())
+                {
+                    enemyUnits[SelectedEnemyUnit].StartMove();
+                    SelectUnit();
                 }
             }
         }
+
+        CheckTurn();
     }
 
     public void OnQueryUnit(InputAction.CallbackContext context)
     {
-        if(context.performed)
+        if(BattleTeamTurn == BattleTeamTurn.Player && context.performed)
         {
             var hit = Physics2D.OverlapPoint(Camera.main.ScreenToWorldPoint(MousePosition), PlayerLayer);
 
@@ -247,7 +288,7 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
                 var unit = hit.gameObject.GetComponentInParent<PlayerController>();
                 if (unit)
                 {
-                    SelectedUnit = units.IndexOf(unit);
+                    SelectedUnit = playerUnits.IndexOf(unit);
                     SelectUnit();
                 }
             }
@@ -261,14 +302,61 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
 
     private void DeprioritizeAllUnitCameras()
     {
-        for (var i = 0; i < units.Count(); ++i)
+        for (var i = 0; i < playerUnits.Count(); ++i)
         {
-            var unit = units.ElementAt(i);
+            var unit = playerUnits.ElementAt(i);
             var vc = unit.GetVirtualCamera();
 
             if (vc)
             {
                 vc.Priority = VirtualCameraInactivePriority;
+            }
+        }
+
+        for (var i = 0; i < enemyUnits.Count(); ++i)
+        {
+            var unit = enemyUnits.ElementAt(i);
+            var vc = unit.GetVirtualCamera();
+
+            if (vc)
+            {
+                vc.Priority = VirtualCameraInactivePriority;
+            }
+        }
+    }
+
+    private void CheckTurn()
+    {
+        BaseUnit unitToFocus = null;
+        if(BattleTeamTurn == BattleTeamTurn.Player &&  UnitTurnTaken.Count() == playerUnits.Count())
+        {
+            BattleTeamTurn = BattleTeamTurn.Enemy;
+            SelectedEnemyUnit = 0;
+            unitToFocus = enemyUnits[SelectedEnemyUnit];
+            UnitTurnTaken.Clear();
+
+            enemyUnits[SelectedEnemyUnit].StartMove();
+
+            DeprioritizeAllUnitCameras();
+        }
+        else if(BattleTeamTurn == BattleTeamTurn.Enemy && UnitTurnTaken.Count() == enemyUnits.Count())
+        {
+            BattleTeamTurn = BattleTeamTurn.Player;
+            SelectedUnit = 0;
+            unitToFocus = playerUnits[SelectedUnit];
+            UnitTurnTaken.Clear();
+
+            DeprioritizeAllUnitCameras();
+        }
+
+        if(unitToFocus != null && PanningCamera != null)
+        {
+            PanningCamera.Priority = VirtualCameraActivePriority;
+
+            var vc = unitToFocus.GetVirtualCamera();
+            if(vc)
+            {
+                PanningCamera.ForceCameraPosition(vc.transform.position, vc.transform.rotation);
             }
         }
     }

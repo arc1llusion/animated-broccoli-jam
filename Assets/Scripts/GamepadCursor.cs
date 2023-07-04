@@ -112,7 +112,7 @@ public class GamepadCursor : MonoBehaviour
 
     private void OnControlsChanged(PlayerInput input)
     {
-        if (!cursorTransform)
+        if (!cursorTransform || currentMouse == null || virtualMouse == null)
             return;
 
         if (playerInput.currentControlScheme == keyboardAndMouseScheme && previousControlScheme != keyboardAndMouseScheme)

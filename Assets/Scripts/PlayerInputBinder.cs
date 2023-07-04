@@ -1,15 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-using Unity.VisualScripting;
-using UnityEngine;
 using UnityEngine.InputSystem;
-using static System.Collections.Specialized.BitVector32;
 
 
 public class PlayerInputBinderSettings
@@ -221,7 +214,7 @@ public static class PlayerInputBinder
         }
     }
 
-    private static void AddEventHandler(InputAction action, object instance, EventInfo ev, Delegate handler)
+    private static void AddEventHandler<T>(InputAction action, T instance, EventInfo ev, Delegate handler)
     {
         if (!InputEventDelegateMappings.ContainsKey(action))
         {

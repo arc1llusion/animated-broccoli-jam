@@ -7,50 +7,18 @@ using UnityEngine.Windows;
 
 
 [RequireComponent(typeof(Movement))]
-public class PlayerController : MonoBehaviour, PlayerActions.IUnitActions
+public class PlayerController : BaseUnit, PlayerActions.IUnitActions
 {
-    PlayerActions controls;
-
-    [SerializeField]
-    private float Speed = 2.0f;
-
-    [SerializeField]
-    private float SprintSpeed = 5.0f;
-
-    [SerializeField]
-    private bool DoTraditionalMovement = true;
-
-    [SerializeField]
-    private GameObject SelectedIndicator = null;
-
-    private bool IsSprinting = false;
-
-    private Vector2 movementVector = Vector2.zero;
-
-    private Rigidbody2D rigid;
-
-    private CinemachineVirtualCamera vc;
-
-    private GameManager gameManager;
-
-    private Movement movement;
-
     private PlayerInput playerInput;
 
-    private void Start()
+    protected override void Start()
     {
-        rigid = GetComponent<Rigidbody2D>();
-        vc = GetComponentInChildren<CinemachineVirtualCamera>(true);
-        gameManager = FindFirstObjectByType<GameManager>();
-        movement = GetComponent<Movement>();
+        base.Start();
     }
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
-        if(gameManager == null)
-        {
-            gameManager = FindFirstObjectByType<GameManager>();
-        }
+        base.OnEnable();
 
         if (playerInput == null)
         {
@@ -58,16 +26,15 @@ public class PlayerController : MonoBehaviour, PlayerActions.IUnitActions
         }
     }
 
-    public void SetUnitMovementEnabled(bool Enable)
+    public override void SetUnitMovementEnabled(bool Enable)
     {
+        base.SetUnitMovementEnabled(Enable);
+
         if (playerInput == null)
             return;
 
         if(Enable)
         {
-            //controls = new PlayerActions();
-            //controls.Unit.AddCallbacks(this);
-            //controls.Enable();
             PlayerInputBinder.BindPlayerInputToClass(playerInput, typeof(PlayerActions), this);
             playerInput.SwitchCurrentActionMap(nameof(PlayerActions.Unit));
 
@@ -78,12 +45,6 @@ public class PlayerController : MonoBehaviour, PlayerActions.IUnitActions
         }
         else
         {
-            //if (controls != null)
-            //{
-            //    controls.Disable();
-            //    controls.Unit.RemoveCallbacks(this);
-            //    controls = null;
-            //}
             PlayerInputBinder.UnbindPlayerInputToClass(playerInput, typeof(PlayerActions), this);
 
             if (SelectedIndicator)
@@ -93,19 +54,9 @@ public class PlayerController : MonoBehaviour, PlayerActions.IUnitActions
         }
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
-        SetUnitMovementEnabled(false);
-    }
-
-    private void FixedUpdate()
-    {
-        movement.AddMovementVector(movementVector);
-
-        var moveThisTick = movement.ConsumeInputVector(Time.fixedDeltaTime, IsSprinting ? SprintSpeed : Speed);
-        rigid.MovePosition(rigid.position + moveThisTick);
-
-        movement.SetLastPosition(transform.position);
+        base.OnDisable();
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -144,34 +95,9 @@ public class PlayerController : MonoBehaviour, PlayerActions.IUnitActions
         {
             if (gameManager)
             {
-                gameManager.ReturnUnit(this);
+                gameManager.ReturnUnit(this, false);
             }
         }
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawLine(transform.position, transform.position + new Vector3(movementVector.x, movementVector.y, 0.0f) * 10);
-    }
-
-    public CinemachineVirtualCamera GetVirtualCamera()
-    {
-        return vc;
-    }
-
-    public void StartMove()
-    {
-        movement.StartMove();
-    }
-
-    public void ResetMove()
-    {
-        movement.ResetMove();
-    }
-
-    public void ConfirmMove()
-    {
-        movement.ConfirmMove();
     }
 
     public void OnConfirm(InputAction.CallbackContext context)
@@ -182,7 +108,7 @@ public class PlayerController : MonoBehaviour, PlayerActions.IUnitActions
 
             if (gameManager)
             {
-                gameManager.ReturnUnit(this);
+                gameManager.ReturnUnit(this, true);
             }
         }
     }

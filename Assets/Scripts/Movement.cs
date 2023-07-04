@@ -38,6 +38,14 @@ public class Movement : MonoBehaviour
         return deltaMove;
     }
 
+    public float DistanceRemaining
+    {
+        get
+        {
+            return DistanceAllowed - currentDistanceTraveled;
+        }
+    }
+
     public void StartMove()
     {
         startingPosition = transform.position;
