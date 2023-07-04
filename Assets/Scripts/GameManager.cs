@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
     [SerializeField]
     CinemachineVirtualCamera PanningCamera;
 
+    private PlayerInput playerInput = null;
+
     private Vector2 PanningCameraTranslate = Vector2.zero;
 
     private float CameraPanSpeed = 4.0f;
@@ -44,7 +46,12 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
 
     private void OnEnable()
     {
-        SetOverviewControlsEnabled(true);
+        if (playerInput == null)
+        {
+            playerInput = GetComponent<PlayerInput>();
+        }
+
+        SetOverviewControlsEnabled(true);       
     }
 
     private void OnDisable()
@@ -59,20 +66,32 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
 
     public void SetOverviewControlsEnabled(bool Enable)
     {
+        if(playerInput == null)
+        {
+            return;
+        }
+
         if (Enable)
         {
-            controls = new PlayerActions();
-            controls.Selection.AddCallbacks(this);
-            controls.Enable();
+            //Before
+            //controls = new PlayerActions();
+            //controls.Selection.AddCallbacks(this);
+            //controls.Enable();
+
+            //After
+            PlayerInputBinder.BindPlayerInputToClass(playerInput, typeof(PlayerActions), this);
+            playerInput.SwitchCurrentActionMap(nameof(PlayerActions.Selection));
         }
         else
         {
-            if (controls != null)
-            {
-                controls.Disable();
-                controls.Selection.RemoveCallbacks(this);
-                controls = null;
-            }
+            //if (controls != null)
+            //{
+            //    controls.Disable();
+            //    controls.Selection.RemoveCallbacks(this);
+            //    controls = null;
+            //}
+
+            PlayerInputBinder.UnbindPlayerInputToClass(playerInput, typeof(PlayerActions), this);
         }
     }
 

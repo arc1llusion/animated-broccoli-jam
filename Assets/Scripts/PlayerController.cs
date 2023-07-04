@@ -35,6 +35,8 @@ public class PlayerController : MonoBehaviour, PlayerActions.IUnitActions
 
     private Movement movement;
 
+    private PlayerInput playerInput;
+
     private void Start()
     {
         rigid = GetComponent<Rigidbody2D>();
@@ -45,30 +47,44 @@ public class PlayerController : MonoBehaviour, PlayerActions.IUnitActions
 
     private void OnEnable()
     {
-        
+        if(gameManager == null)
+        {
+            gameManager = FindFirstObjectByType<GameManager>();
+        }
+
+        if (playerInput == null)
+        {
+            playerInput = gameManager.GetComponent<PlayerInput>();
+        }
     }
 
     public void SetUnitMovementEnabled(bool Enable)
     {
+        if (playerInput == null)
+            return;
+
         if(Enable)
         {
-            controls = new PlayerActions();
-            controls.Unit.AddCallbacks(this);
-            controls.Enable();
+            //controls = new PlayerActions();
+            //controls.Unit.AddCallbacks(this);
+            //controls.Enable();
+            PlayerInputBinder.BindPlayerInputToClass(playerInput, typeof(PlayerActions), this);
+            playerInput.SwitchCurrentActionMap(nameof(PlayerActions.Unit));
 
-            if(SelectedIndicator)
+            if (SelectedIndicator)
             {
                 SelectedIndicator.SetActive(true);
             }
         }
         else
         {
-            if (controls != null)
-            {
-                controls.Disable();
-                controls.Unit.RemoveCallbacks(this);
-                controls = null;
-            }
+            //if (controls != null)
+            //{
+            //    controls.Disable();
+            //    controls.Unit.RemoveCallbacks(this);
+            //    controls = null;
+            //}
+            PlayerInputBinder.UnbindPlayerInputToClass(playerInput, typeof(PlayerActions), this);
 
             if (SelectedIndicator)
             {
