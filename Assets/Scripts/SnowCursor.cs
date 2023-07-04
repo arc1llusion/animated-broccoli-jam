@@ -8,7 +8,7 @@ using UnityEngine.InputSystem.UI;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.InputSystem.Users;
 
-public class Cursor : MonoBehaviour
+public class SnowCursor : MonoBehaviour
 {
     public RectTransform cursorGraphic;
     public Vector2 currentPosition;
