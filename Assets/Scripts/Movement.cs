@@ -38,6 +38,19 @@ public class Movement : MonoBehaviour
         return deltaMove;
     }
 
+    public bool UpdatePosition()
+    {
+        var deltaDistance = Vector3.Distance(transform.position, lastPosition);
+        if (currentDistanceTraveled + deltaDistance >= DistanceAllowed)
+        {
+            return false;
+        }
+
+        currentDistanceTraveled += deltaDistance;
+
+        return true;
+    }
+
     public float DistanceRemaining
     {
         get

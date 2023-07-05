@@ -43,8 +43,8 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
 
     private void Start()
     {
-        playerUnits = FindObjectsByType<PlayerController>(FindObjectsInactive.Exclude, FindObjectsSortMode.None).Select(x => (BaseUnit)x).ToList();
-        enemyUnits = FindObjectsByType<EnemyController>(FindObjectsInactive.Exclude, FindObjectsSortMode.None).Select(x => (BaseUnit)x).ToList();
+        playerUnits = FindObjectsByType<PlayerController>(FindObjectsInactive.Exclude, FindObjectsSortMode.InstanceID).Select(x => (BaseUnit)x).ToList();
+        enemyUnits = FindObjectsByType<EnemyController>(FindObjectsInactive.Exclude, FindObjectsSortMode.InstanceID).Select(x => (BaseUnit)x).ToList();
 
         if (!PanningCamera)
         {
@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
             playerInput = GetComponent<PlayerInput>();
         }
 
-        SetOverviewControlsEnabled(true);       
+        SetOverviewControlsEnabled(true);
     }
 
     private void OnDisable()
@@ -78,7 +78,7 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
 
     public void SetOverviewControlsEnabled(bool Enable)
     {
-        if(playerInput == null)
+        if (playerInput == null)
         {
             return;
         }
@@ -108,10 +108,10 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
             PanningCamera.Priority = VirtualCameraActivePriority;
 
             var vc = GetSelectedUnitVirtualCamera();
-            if(vc)
+            if (vc)
             {
                 PanningCamera.ForceCameraPosition(vc.transform.position, vc.transform.rotation);
-            }     
+            }
         }
 
         DeprioritizeAllUnitCameras();
@@ -188,8 +188,8 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
     {
         var selectedIdx = 0;
         List<BaseUnit> unitsToCheck;
-        
-        if(BattleTeamTurn == BattleTeamTurn.Player)
+
+        if (BattleTeamTurn == BattleTeamTurn.Player)
         {
             selectedIdx = SelectedUnit;
             unitsToCheck = playerUnits;
@@ -214,7 +214,7 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
             {
                 if (i == selectedIdx)
                 {
-                    vc.Priority = VirtualCameraActivePriority; 
+                    vc.Priority = VirtualCameraActivePriority;
                     unit.SetUnitMovementEnabled(true);
                     unit.StartMove();
 
@@ -263,7 +263,7 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
                     }
                 }
             }
-            else if(BattleTeamTurn == BattleTeamTurn.Enemy)
+            else if (BattleTeamTurn == BattleTeamTurn.Enemy)
             {
                 ++SelectedEnemyUnit;
                 if (SelectedEnemyUnit < enemyUnits.Count())
@@ -279,7 +279,7 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
 
     public void OnQueryUnit(InputAction.CallbackContext context)
     {
-        if(BattleTeamTurn == BattleTeamTurn.Player && context.performed)
+        if (BattleTeamTurn == BattleTeamTurn.Player && context.performed)
         {
             var hit = Physics2D.OverlapPoint(Camera.main.ScreenToWorldPoint(MousePosition), PlayerLayer);
 
@@ -328,18 +328,18 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
     private void CheckTurn()
     {
         BaseUnit unitToFocus = null;
-        if(BattleTeamTurn == BattleTeamTurn.Player &&  UnitTurnTaken.Count() == playerUnits.Count())
+        if (BattleTeamTurn == BattleTeamTurn.Player && UnitTurnTaken.Count() == playerUnits.Count())
         {
             BattleTeamTurn = BattleTeamTurn.Enemy;
             SelectedEnemyUnit = 0;
             unitToFocus = enemyUnits[SelectedEnemyUnit];
             UnitTurnTaken.Clear();
 
-            enemyUnits[SelectedEnemyUnit].StartMove();
-
             DeprioritizeAllUnitCameras();
+
+            SelectUnit();
         }
-        else if(BattleTeamTurn == BattleTeamTurn.Enemy && UnitTurnTaken.Count() == enemyUnits.Count())
+        else if (BattleTeamTurn == BattleTeamTurn.Enemy && UnitTurnTaken.Count() == enemyUnits.Count())
         {
             BattleTeamTurn = BattleTeamTurn.Player;
             SelectedUnit = 0;
@@ -347,14 +347,11 @@ public class GameManager : MonoBehaviour, PlayerActions.ISelectionActions
             UnitTurnTaken.Clear();
 
             DeprioritizeAllUnitCameras();
-        }
 
-        if(unitToFocus != null && PanningCamera != null)
-        {
             PanningCamera.Priority = VirtualCameraActivePriority;
 
             var vc = unitToFocus.GetVirtualCamera();
-            if(vc)
+            if (vc)
             {
                 PanningCamera.ForceCameraPosition(vc.transform.position, vc.transform.rotation);
             }
