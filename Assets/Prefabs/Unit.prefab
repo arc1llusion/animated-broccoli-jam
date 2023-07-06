@@ -379,7 +379,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5860111223169142697}
   - component: {fileID: 2183865720436850795}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: MovementCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
